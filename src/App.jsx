@@ -104,7 +104,73 @@ function App() {
             <p className="font-semibold">{error}</p>
           </div>
         )}
+
+        {weather && !loading && (
+          <div className="bg-white bg-opacity-95 backdrop-blur-sm rounded-2xl p-6 shadow-2xl">
+            {/* Location Header */}
+            <div className="text-center mb-6">
+              <h2 className="text-2xl font-bold text-gray-800">
+                {weather.name}, {weather.sys.country}
+              </h2>
+            </div>
+
+            {/* Main Weather Info */}
+            <div className="flex items-center justify-center gap-6 mb-6">
+              <div className="text-center">
+                <img
+                  src={`https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`}
+                  alt={weather.weather[0].description}
+                  className="w-20 h-20 mx-auto"
+                />
+                <p className="text-gray-600 capitalize font-medium">
+                  {weather.weather[0].description}
+                </p>
+              </div>
+
+              <div className="text-center">
+                <div className="text-5xl font-bold text-gray-800">
+                  {Math.round(weather.main.temp)}°C
+                </div>
+                <p className="text-gray-600 text-sm">
+                  Terasa seperti {Math.round(weather.main.feels_like)}°C
+                </p>
+              </div>
+            </div>
+
+            {/* Weather Details Grid */}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="bg-blue-50 rounded-xl p-4 text-center">
+                <div className="text-2xl mb-1">💧</div>
+                <p className="text-sm text-gray-600">Kelembaban</p>
+                <p className="font-bold text-gray-800">
+                  {weather.main.humidity}%
+                </p>
+              </div>
+
+              <div className="bg-green-50 rounded-xl p-4 text-center">
+                <div className="text-2xl mb-1">💨</div>
+                <p className="text-sm text-gray-600">Kec. Angin</p>
+                <p className="font-bold text-gray-800">
+                  {weather.wind.speed} m/s
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
+
+      {!weather && !loading && !error && (
+        <div className="bg-white bg-opacity-20 backdrop-blur-sm rounded-2xl p-6 text-white text-center">
+          <div className="text-4xl mb-4">🌍</div>
+          <h3 className="font-semibold mb-2">Selamat datang!</h3>
+          <p className="text-sm opacity-90">
+            Masukkan nama kota untuk melihat cuaca terkini
+          </p>
+          <p className="text-xs mt-2 opacity-80">
+            Contoh: Jakarta, Surabaya, Medan
+          </p>
+        </div>
+      )}
     </div>
   );
 }
