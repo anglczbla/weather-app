@@ -1,31 +1,30 @@
-import { useState } from 'react';
-
+import { useState } from "react";
 
 function App() {
   // State untuk input kota
-  const [city, setCity] = useState('');
+  const [city, setCity] = useState("");
   // State untuk data cuaca
   const [weather, setWeather] = useState(null);
   // State untuk loading
   const [loading, setLoading] = useState(false);
   // State untuk error
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   const fetchWeather = async (cityName) => {
     const API_KEY = process.env.REACT_APP_WEATHER_API_KEY;
     const url = `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${API_KEY}&units=metric&lang=id`;
-    
+
     try {
       const response = await fetch(url);
-      
+
       if (!response.ok) {
-        throw new Error('Kota tidak ditemukan');
+        throw new Error("Kota tidak ditemukan");
       }
-      
+
       const data = await response.json();
       return data;
     } catch (err) {
-      throw new Error(err.message || 'Gagal mengambil data cuaca');
+      throw new Error(err.message || "Gagal mengambil data cuaca");
     }
   };
 
@@ -33,9 +32,32 @@ function App() {
     setCity(e.target.value);
   };
 
-  const handleSearch = () => {
-    // Logic pencarian akan ditambahkan nanti
-    console.log('Searching for:', city);
+  const handleSearch = async () => {
+    // Validasi input
+    if (!city.trim()) {
+      setError("Silakan masukkan nama kota");
+      return;
+    }
+
+    // Reset state
+    setLoading(true);
+    setError("");
+    setWeather(null);
+
+    try {
+      const weatherData = await fetchWeather(city);
+      setWeather(weatherData);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      handleSearch();
+    }
   };
 
   return (
@@ -44,7 +66,7 @@ function App() {
         <h1 className="text-4xl font-bold text-white text-center mb-8">
           ⛅ Weather App
         </h1>
-        
+
         {/* Search Input */}
         <div className="mb-6">
           <div className="flex gap-2">
@@ -53,16 +75,35 @@ function App() {
               placeholder="Masukkan nama kota..."
               value={city}
               onChange={handleInputChange}
-              className="flex-1 px-4 py-3 rounded-full border-none outline-none text-gray-700 shadow-lg focus:ring-2 focus:ring-blue-300"
+              onKeyPress={handleKeyPress}
+              disabled={loading}
+              className="flex-1 px-4 py-3 rounded-full border-none outline-none text-gray-700 shadow-lg focus:ring-2 focus:ring-blue-300 disabled:opacity-50"
             />
             <button
               onClick={handleSearch}
-              className="px-6 py-3 bg-green-500 text-white rounded-full font-semibold shadow-lg hover:bg-green-600 transition-colors"
+              disabled={loading}
+              className="px-6 py-3 bg-green-500 text-white rounded-full font-semibold shadow-lg hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
-              🔍
+              {loading ? "🔄" : "🔍"}
             </button>
           </div>
         </div>
+
+        {/* Loading State */}
+        {loading && (
+          <div className="bg-white bg-opacity-20 backdrop-blur-sm rounded-2xl p-6 text-center text-white mb-6">
+            <div className="animate-spin text-4xl mb-2">🌀</div>
+            <p>Sedang mencari data cuaca...</p>
+          </div>
+        )}
+
+        {/* Error State */}
+        {error && (
+          <div className="bg-red-500 bg-opacity-20 backdrop-blur-sm rounded-2xl p-6 text-center text-white mb-6">
+            <div className="text-4xl mb-2">❌</div>
+            <p className="font-semibold">{error}</p>
+          </div>
+        )}
       </div>
     </div>
   );
