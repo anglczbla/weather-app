@@ -11,6 +11,23 @@ function App() {
   // State untuk error
   const [error, setError] = useState('');
 
+  const fetchWeather = async (cityName) => {
+    const API_KEY = process.env.REACT_APP_WEATHER_API_KEY;
+    const url = `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${API_KEY}&units=metric&lang=id`;
+    
+    try {
+      const response = await fetch(url);
+      
+      if (!response.ok) {
+        throw new Error('Kota tidak ditemukan');
+      }
+      
+      const data = await response.json();
+      return data;
+    } catch (err) {
+      throw new Error(err.message || 'Gagal mengambil data cuaca');
+    }
+  };
 
   const handleInputChange = (e) => {
     setCity(e.target.value);
