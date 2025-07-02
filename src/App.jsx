@@ -8,6 +8,7 @@ function App() {
 
   const fetchWeather = async (cityName) => {
     const API_KEY = import.meta.env.VITE_WEATHER_API_KEY;
+    console.log('API Key:', API_KEY ? 'Ada' : 'Tidak ada');
     const url = `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${API_KEY}&units=metric&lang=id`;
 
     try {
