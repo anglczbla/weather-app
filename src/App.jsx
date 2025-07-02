@@ -1,17 +1,13 @@
-import { useState } from "react";
+import React, { useState } from "react";
 
 function App() {
-  // State untuk input kota
   const [city, setCity] = useState("");
-  // State untuk data cuaca
   const [weather, setWeather] = useState(null);
-  // State untuk loading
   const [loading, setLoading] = useState(false);
-  // State untuk error
   const [error, setError] = useState("");
 
   const fetchWeather = async (cityName) => {
-    const API_KEY = process.env.REACT_APP_WEATHER_API_KEY;
+    const API_KEY = import.meta.env.VITE_WEATHER_API_KEY;
     const url = `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${API_KEY}&units=metric&lang=id`;
 
     try {
@@ -32,14 +28,18 @@ function App() {
     setCity(e.target.value);
   };
 
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      handleSearch();
+    }
+  };
+
   const handleSearch = async () => {
-    // Validasi input
     if (!city.trim()) {
       setError("Silakan masukkan nama kota");
       return;
     }
 
-    // Reset state
     setLoading(true);
     setError("");
     setWeather(null);
@@ -51,12 +51,6 @@ function App() {
       setError(err.message);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleKeyPress = (e) => {
-    if (e.key === "Enter") {
-      handleSearch();
     }
   };
 
@@ -105,16 +99,15 @@ function App() {
           </div>
         )}
 
+        {/* Weather Display */}
         {weather && !loading && (
           <div className="bg-white bg-opacity-95 backdrop-blur-sm rounded-2xl p-6 shadow-2xl">
-            {/* Location Header */}
             <div className="text-center mb-6">
               <h2 className="text-2xl font-bold text-gray-800">
                 {weather.name}, {weather.sys.country}
               </h2>
             </div>
 
-            {/* Main Weather Info */}
             <div className="flex items-center justify-center gap-6 mb-6">
               <div className="text-center">
                 <img
@@ -137,7 +130,6 @@ function App() {
               </div>
             </div>
 
-            {/* Weather Details Grid */}
             <div className="grid grid-cols-2 gap-4">
               <div className="bg-blue-50 rounded-xl p-4 text-center">
                 <div className="text-2xl mb-1">💧</div>
@@ -157,20 +149,23 @@ function App() {
             </div>
           </div>
         )}
-      </div>
 
-      {!weather && !loading && !error && (
-        <div className="bg-white bg-opacity-20 backdrop-blur-sm rounded-2xl p-6 text-white text-center">
-          <div className="text-4xl mb-4">🌍</div>
-          <h3 className="font-semibold mb-2">Selamat datang!</h3>
-          <p className="text-sm opacity-90">
-            Masukkan nama kota untuk melihat cuaca terkini
-          </p>
-          <p className="text-xs mt-2 opacity-80">
-            Contoh: Jakarta, Surabaya, Medan
-          </p>
-        </div>
-      )}
+        {/* Welcome Message */}
+        {!weather && !loading && !error && (
+          <div className="bg-gray-800 bg-opacity-80 rounded-2xl p-8 text-center shadow-2xl border border-gray-600">
+            <div className="text-6xl mb-4">🌍</div>
+            <h3 className="text-2xl font-bold mb-4 text-white">
+              Selamat datang!
+            </h3>
+            <p className="text-lg mb-4 text-gray-200">
+              Masukkan nama kota untuk melihat cuaca terkini
+            </p>
+            <p className="text-sm text-gray-300 bg-gray-700 rounded-full px-6 py-2 inline-block">
+              Contoh: Jakarta, Surabaya, Medan
+            </p>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
