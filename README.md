@@ -16,9 +16,9 @@ A simple and modern weather forecasting web app built with **React.js**. This ap
 
 ## 💦 Tech Stack
 
-* **Frontend**: React.js, HTML5, CSS3
+* **Frontend**: React.js
 * **API**: [OpenWeatherMap API](https://openweathermap.org/api)
-* **Styling**: CSS Modules / Inline styles
+* **Styling**: Tailwind css
 
 ## 📦 Installation
 
